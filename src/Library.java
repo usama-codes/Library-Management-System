@@ -37,7 +37,6 @@ public class Library {
     public User addUser() {
 
         System.out.println("ADDING USER: \n");
-
         int userID;
         //Checking whether the new user is unique or not
         boolean isUnique;
@@ -55,7 +54,6 @@ public class Library {
         }
         //prompting user for input as long as a unique ID is not given 
         while (!isUnique);
-        //getting user information
         String username = Helper.getStringInput("Enter the user name: ");
         String contact = Helper.getContactInfo("Enter the contact number: ");
         //assigning user input values to attributes using class constructor
@@ -63,7 +61,6 @@ public class Library {
         //adding user to the list of users
         users.add(user);
         FileHandling.saveUsers(users, "users.txt");
-        //success message
         System.out.println("User " + user.getUserName() + " added successfully!");
         System.out.println("\t\t----------------------------------------------------------------");
 
@@ -87,24 +84,23 @@ public class Library {
             }
         } 
         while (!isUnique);
-        //getting boook information from user
-        String bookTitle = Helper.getStringInput("Enter the title of the book: ");
+        String bookTitle = Helper.getTitleInput("Enter the title of the book: ");
         String bookAuthor = Helper.getStringInput("Enter the author of the book: ");
         String bookGenre = Helper.getStringInput("Enter the genre of the book: ");
 
         //passing values to object constructor
         Book book = new Book(bookID, bookTitle, bookAuthor, bookGenre);
-        //adding book to books list
         books.add(book);
         FileHandling.saveBooks(books, "books.txt");
-        //success message
         System.out.println("\"" + book.getTitle() + "\" added successfully!");
         System.out.println("\t\t----------------------------------------------------------------");
+
         return book;
     }
     
     //Method for returning a book
     public void returnBook() {
+        //Loads books and users from file
         FileHandling.loadBooks("books.txt");
         FileHandling.loadUsers("users.txt");
         boolean userFound = false, bookFound = false;
@@ -117,38 +113,41 @@ public class Library {
             return;
         }
 
-        int booktoreturnID = Helper.getIntInput("Enter the book ID: ");
         for (User user : users) {
-            //checking user ID inputted with available users
+            // checking user ID inputted with available users
             if (user.getUserID() == returningUserID) {
                 userFound = true;
-                for (Book book : books) {
-                    // checking book ID inputted with available books
+                break;
+            }
+        }
+        if (!userFound) {
+            System.out.println("User not found!");
+            return;
+        }
+
+        int booktoreturnID = Helper.getIntInput("Enter the book ID: ");
+            for(User user : users) {    
+                for (Book book : user.getBorrowedBooks()) {
                     if (book.getBookID() == booktoreturnID) {
                         bookFound = true;
-                        //adding book to library book list
-                        books.add(book);
+                        //removing book from user's borrowed books' list
                         user.getBorrowedBooks().remove(book);
-                        //success message
                         System.out.println("Book \"" + book.getTitle() + "\" returned successfully by \""
                                 + user.getUserName() + "\"");
                         //changing book availability to true
                         book.setAvailable(true);
+                        
                         return;
                     }
                 }
                 FileHandling.saveBooks(books, "books.txt");
                 FileHandling.saveUsers(users, "users.txt");
                 if (!bookFound) {
-                    System.out.println("Book not found!");
+                    System.out.println("Requested book is not borrowed by this user");
                 }
                 return;
             }
         }
-        if (!userFound) {
-            System.out.println("User not found!");
-        }
-    }
 
     //Method for searching a book
     public void searchBook() {
@@ -159,7 +158,7 @@ public class Library {
                     "How do you want to search the book?\n 1. By Title \n2. By Author Name \n3. By User ID");
             switch (choice) {
                 case 1 -> {
-                    String titleToSearch = Helper.getStringInput("Enter the title you want to search: ");
+                    String titleToSearch = Helper.getTitleInput("Enter the title you want to search: ");
                     //Method call
                     searchBookByTitle(titleToSearch);
                 }
@@ -203,30 +202,34 @@ public class Library {
     }
     //Method for searching book by User ID
     public void searchBookByUserID(int userIDtoSearch) {
-    boolean found = false;
-    for (User user : users) {
-        //Checking user inputted user ID with those available in library
-        System.out.println("Checking user ID: " + user.getUserID());  // Add this line for debugging
-        if (user.getUserID() == userIDtoSearch) {
-            System.out.println("Books borrowed by " + user.getUserName() + " are:");
-            for (Book book : user.getBorrowedBooks()) {
-                FileHandling.loadBooks("books.txt");
-                FileHandling.loadUsers("users.txt");
-                //Method call for displaying book information
-                book.displayBookInfo();
+        boolean userFound = false;
+        for (User user : users) {
+            //Checking user inputted user ID with those available in library
+            if (user.getUserID() == userIDtoSearch) {
+                userFound = true;
             }
-            found = true;
+        }
+        if (!userFound) {
+            System.out.println("User not found!");
+            return;
+        }
+        //Check for a user having no book borrowed
+        for (User user : users) {
+            if (user.getUserID() == userIDtoSearch && user.getBorrowedBooks().isEmpty()) {
+                System.out.println("No books borrowed by " + user.getUserName());
+                return;
+            }
+            else if(user.getUserID() == userIDtoSearch && !user.getBorrowedBooks().isEmpty()){
+                System.out.println("Books borrowed by " + user.getUserName() + " are:");
+                for (Book book : user.getBorrowedBooks()) {
+                    FileHandling.loadBooks("books.txt");
+                    FileHandling.loadUsers("users.txt");
+                    //Method call for displaying book information
+                    book.displayBookInfo();
+                }
+            }
         }
     }
-    //error message for unavailable user ID
-    if (!found) {
-        System.out.println("User not found!");
-    }
-    //error message for book not borrowed by any user
-    if (!found) {
-        System.out.println("Book not found with any user!");
-    }
-}
 
     //Method for searching book by Title
     public Book searchBookByTitle(String titleToSearch) {
@@ -256,10 +259,8 @@ public class Library {
         }
         else {
             System.out.println("Available Books Are: ");
-            for (int i = 0; i < books.size(); i++) {
-                //Displaying book information
-                System.out.println("Book " + (i + 1) + ":");
-                books.get(i).displayBookInfo();
+            for (Book book : books) {
+                book.displayBookInfo();
             }
         }
     }
@@ -301,8 +302,6 @@ public class Library {
     //Method for borrowing a book
     public void borrowBook() {
         System.out.println("BORROWING BOOK: ");
-
-        // prompting user for book ID
         int bookID = Helper.getIntInput("Enter the book ID:");
 
         // Search for the book
@@ -337,7 +336,6 @@ public class Library {
                 break;
             }
         }
-
         // Check if the user was found
         if (borrower == null) {
             System.out.println("User not found!");
@@ -345,8 +343,7 @@ public class Library {
             return;
         }
 
-        // Changing book availability to false and adding the book to the user's
-        // borrowed list
+         // Changing book availability to false and adding the book to the user's borrowed list //
         borrower.getBorrowedBooks().add(booktoBorrow);
         booktoBorrow.setAvailable(false);
 

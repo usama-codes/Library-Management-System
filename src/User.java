@@ -3,7 +3,7 @@ import java.io.Serializable;
 
 public class User implements Serializable {
     private int userID;
-    private String userName;
+    private String userName; 
     private String contactInfo;
     private ArrayList<Book> borrowedBooks = new ArrayList<Book>();
 

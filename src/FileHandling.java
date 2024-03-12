@@ -43,7 +43,7 @@ public class FileHandling {
                 ObjectInputStream in = new ObjectInputStream(fileIn);
                 Object obj = in.readObject();
                 if (obj instanceof ArrayList) {
-                    books = (ArrayList<Book>) obj;
+                    books = (ArrayList<Book>) obj; 
                 }
                 in.close();
                 fileIn.close();
