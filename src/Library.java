@@ -85,11 +85,8 @@ public class Library {
                     isUnique = false;
                 }
             }
-            if (!isUnique) {
-                continue;
-            }
-
-        } while (!isUnique);
+        } 
+        while (!isUnique);
         //getting boook information from user
         String bookTitle = Helper.getStringInput("Enter the title of the book: ");
         String bookAuthor = Helper.getStringInput("Enter the author of the book: ");
@@ -205,8 +202,7 @@ public class Library {
         return null;
     }
     //Method for searching book by User ID
-    //Method for searching book by User ID
-public void searchBookByUserID(int userIDtoSearch) {
+    public void searchBookByUserID(int userIDtoSearch) {
     boolean found = false;
     for (User user : users) {
         //Checking user inputted user ID with those available in library
@@ -254,16 +250,17 @@ public void searchBookByUserID(int userIDtoSearch) {
 
     //Method for displaying all books of library
     public void displayBooks() {
-        if(books.isEmpty()){
+        if (books.isEmpty()) {
             System.out.println("No books found!");
             return;
         }
-        System.out.println("Available Books Are: ");
-        for (int i = 0; i < books.size(); i++) {
-            //Getting book number
-            Book book = books.get(i);
-            //Displaying book information
-            book.displayBookInfo();
+        else {
+            System.out.println("Available Books Are: ");
+            for (int i = 0; i < books.size(); i++) {
+                //Displaying book information
+                System.out.println("Book " + (i + 1) + ":");
+                books.get(i).displayBookInfo();
+            }
         }
     }
 
