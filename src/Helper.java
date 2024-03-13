@@ -85,38 +85,4 @@ public class Helper {
             }
         }
     }
-
-    // Method for main menu
-    public void menu() {
-        int choice;
-        do {
-            System.out.println("1. Add Book");
-            System.out.println("2. Borrow Book");
-            System.out.println("3. Return Book");
-            System.out.println("4. Search Book");
-            System.out.println("5. Display Books");
-            System.out.println("6. Add User");
-            System.out.println("7. Exit");
-            choice = Helper.getIntInput("Enter your choice: ");
-            switch (choice) {
-                // respective method calls
-                case 1 -> Library.addBook();
-                case 2 -> borrowBook();
-                case 3 -> returnBook();
-                case 4 -> searchBook();
-                case 5 -> displayBooks();
-                case 6 -> addUser();
-                case 7 -> {
-                    FileHandling.saveBooks(books, "books.txt");
-                    FileHandling.saveUsers(users, "users.txt");
-                    System.exit(0);
-                }
-                default -> {
-                    // error handling
-                    System.out.println("Invalid choice!\n");
-                    continue;
-                }
-            }
-        } while (true);
-    }
 }
