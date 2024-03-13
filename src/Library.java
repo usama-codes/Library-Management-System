@@ -28,7 +28,7 @@ public class Library {
         return users;
     }
 
-    public static void setBooks(ArrayList<Book> books) {
+    public static void setBooksList(ArrayList<Book> books) {
         Library.books = books;
     }
 
