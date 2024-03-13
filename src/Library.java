@@ -338,7 +338,7 @@ public class Library {
         int choice;
         do{
             System.out.println("1. Add Book");
-            System.out.println("2. Borrow Book");
+            System.out.println("2. Borrow or Check Out Book");
             System.out.println("3. Return Book");
             System.out.println("4. Search Book");
             System.out.println("5. Display Books");
