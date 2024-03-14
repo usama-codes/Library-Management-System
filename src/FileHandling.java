@@ -17,7 +17,6 @@ public class FileHandling {
             out.writeObject(books);
             out.close();
             fileOut.close();
-            //System.out.printf("Serialized data is saved in " + filename);
         } catch (IOException i) {
             i.printStackTrace();
         }
@@ -30,7 +29,6 @@ public class FileHandling {
             out.writeObject(users);
             out.close();
             fileOut.close();
-            //System.out.printf("Serialized data is saved in " + filename);
         } catch (IOException i) {
             i.printStackTrace();
         }
@@ -61,7 +59,7 @@ public class FileHandling {
         System.out.println("Book class not found");
         c.printStackTrace();
 }
-return books;
+    return books;
     }
 
     public static ArrayList<User> loadUsers(String filename) {
